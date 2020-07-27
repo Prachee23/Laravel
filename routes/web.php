@@ -13,23 +13,66 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' = ['web']], function() {
+// Route::group(['middleware' = ['web']], function() {
 	Route::get('/', function () {
     	return view('welcome');
-	});
+	})->name('home');
 
 	Route::post('/signup', [
-		'users' => 'UserController@postSignUp',
+		'uses' => 'UserController@postSignUp',
 		'as' => 'signup'
 	]);
-});
-// Route::group(['prefix' => 'api/v1','namespace' => 'v1'], function(){
-// 	Route::group(['middleware' =>['firebaseAuthn']], function(){
-// 		Route::get('/', function () {
-//     	return view('welcome');
-//  	});
 
-// 		Route::post('get-generic-settings',[
-// 			'uses' => 'APIController@getSettings']);
-// 	}
+	Route::post('/signin', [
+		'uses' => 'UserController@postSignIn',
+		'as' => 'signin'
+	]);
+
+	Route::get('/account',[
+		'uses' => 'UserController@getAccount',
+		'as' => 'account'
+	]);
+
+	Route::post('/updateaccount',[
+		'uses' => 'UserController@postSaveAccount',
+		'as' => 'account.save'
+	]);
+
+	Route::get('/userimage/{filename}',[
+		'uses' => "UserController@getUserImage",
+		'as' => 'account.image'
+	]);
+
+	Route::get('/logout',[
+		'uses' => 'UserController@getLogout',
+		'as' => 'logout'
+	]);
+
+	Route::get('/dashboard', [
+		'uses' => 'PostController@getDashboard',
+		'as' => 'dashboard',
+		'middleware' => 'auth'
+	]);
+
+	Route::post('/createpost',[
+		'uses' => 'PostController@postCreatePost',
+		'as' => 'post.create',
+		'middleware' => 'auth'
+	]);
+
+	Route::get('/delete-post/{post_id}',[
+		'uses' =>'PostController@getDeletePost',
+		'as' => 'post.delete',
+		'middleware' => 'auth'
+	]);
+
+	Route::post('/edit', [
+		'uses' => 'PostController@postEditPost',
+		'as' => 'edit'
+	]);
+
+	Route::post('/like', [
+		'uses' => 'PostController@postLikePost',
+		'as' => 'like'
+	]);
 // });
